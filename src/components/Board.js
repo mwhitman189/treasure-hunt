@@ -54,45 +54,62 @@ export default function Board({ nRows = 5, nCols = 5, nObstacles = 2, probabilit
         setBoard(createBoard());
     }
 
+    function updateBoard(prevLoc, newLocation) {
+        setBoard(prevBoard => {
+            const newBoard = [ ...prevBoard ];
+            // Clear old position
+            newBoard[ prevLoc[ 0 ] ][ prevLoc[ 1 ] ] = "";
+            // Move hero icon to new position
+            newBoard[ newLocation[ 0 ] ][ newLocation[ 1 ] ] = "👨‍🚀";
+            return newBoard;
+        });
+    }
+
     function handleMove(direction) {
         switch (direction) {
             case 'right':
                 setLocation(prevLoc => {
-                    const newLocation = [ prevLoc[ 0 ], prevLoc[ 1 ] + 1 ];
-                    setBoard(prevBoard => {
-                        const newBoard = [ ...prevBoard ];
-                        // Clear old position
-                        newBoard[ prevLoc[ 0 ] ][ prevLoc[ 1 ] ] = "";
-                        // Move hero icon to new position
-                        newBoard[ newLocation[ 0 ] ][ newLocation[ 1 ] ] = "👨‍🚀";
-                        return newBoard;
-                    });
-                    return newLocation;
+                    if (prevLoc[ 1 ] + 1 < nCols) {
+                        const newLocation = [ prevLoc[ 0 ], prevLoc[ 1 ] + 1 ];
+                        updateBoard(prevLoc, newLocation);
+                        return newLocation;
+                    }
+                    return prevLoc;
                 });
                 break;
 
             case 'down':
                 setLocation(prevLoc => {
-                    const newLocation = [ prevLoc[ 0 ] + 1, prevLoc[ 1 ] ];
-                    setBoard(prevBoard => {
-                        const newBoard = [ ...prevBoard ];
-                        // Clear old position
-                        newBoard[ prevLoc[ 0 ] ][ prevLoc[ 1 ] ] = "";
-                        // Move hero icon to new position
-                        newBoard[ newLocation[ 0 ] ][ newLocation[ 1 ] ] = "👨‍🚀";
-                        return newBoard;
-                    });
-                    return newLocation;
+                    if (prevLoc[ 0 ] + 1 < nCols) {
+                        const newLocation = [ prevLoc[ 0 ] + 1, prevLoc[ 1 ] ];
+                        updateBoard(prevLoc, newLocation);
+                        return newLocation;
+                    }
+                    return prevLoc;
                 });
 
                 break;
 
             case 'left':
-                setLocation(prevLoc => [ prevLoc[ 0 ] - 1, prevLoc[ 1 ] ]);
+                setLocation(prevLoc => {
+                    if (prevLoc[ 1 ] - 1 < nCols) {
+                        const newLocation = [ prevLoc[ 0 ], prevLoc[ 1 ] - 1 ];
+                        updateBoard(prevLoc, newLocation);
+                        return newLocation;
+                    }
+                    return prevLoc;
+                });
                 break;
 
             case 'up':
-                setLocation(prevLoc => [ prevLoc[ 0 ], prevLoc[ 1 ] - 1 ]);
+                setLocation(prevLoc => {
+                    if (prevLoc[ 0 ] - 1 < nCols) {
+                        const newLocation = [ prevLoc[ 0 ] - 1, prevLoc[ 1 ] ];
+                        updateBoard(prevLoc, newLocation);
+                        return newLocation;
+                    }
+                    return prevLoc;
+                });
                 break;
 
             default:
