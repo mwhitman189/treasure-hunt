@@ -9,18 +9,10 @@ import chroma from 'chroma-js';
 
 
 const Container = styled.div`
-    background-color: black;
-    border: 1px solid black;
-    font-size: 2rem;
+    max-width: 800px;
+    font-size: 1.5rem;
 `;
 
-const Title = styled.h1`
-    color: #fff;
-`;
-
-const SpecialText = styled.span`
-    text-transform: uppercase;
-`;
 
 const ResetBtn = styled.button`
     width: 150px;
@@ -36,7 +28,7 @@ const Table = styled.table`
 const TableRow = styled.tr`
 `;
 
-export default function Board({ nRows = 9, nCols = 9, nObstacles = 2, probability = 0.2 }) {
+export default function Board({ nRows = 5, nCols = 5, nObstacles = 2, probability = 0.2 }) {
     const [ board, setBoard ] = useState(createBoard());
     const [ location, setLocation ] = useState([ 0, 0 ]);
     const [ hasWon, setHasWon ] = useState(false);
@@ -44,7 +36,7 @@ export default function Board({ nRows = 9, nCols = 9, nObstacles = 2, probabilit
 
 
     function getShades(colorsArr) {
-        const colorSpectrum = chroma.scale(colorsArr).colors((nCols + nRows - 1));
+        const colorSpectrum = chroma.scale(colorsArr).domain([ 0, .3, 0.4, 0.6, .7, 1 ]).colors((nCols + nRows - 1));
         return colorSpectrum;
     }
 
@@ -151,10 +143,6 @@ export default function Board({ nRows = 9, nCols = 9, nObstacles = 2, probabilit
 
     return (
         <Container>
-            <Title>Koya's Adventures
-                {' '}<SpecialText>in Space!</SpecialText>
-            </Title>
-
             <Table>
                 <tbody>
                     {board.map((row, rowKey) =>

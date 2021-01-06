@@ -1,6 +1,7 @@
 import Board from './components/Board';
 import './App.css';
 import { ThemeProvider } from 'styled-components';
+import styled from 'styled-components';
 
 
 const theme = {
@@ -11,13 +12,34 @@ const theme = {
   }
 };
 
+const Container = styled.div`
+  background-color: black;
+  border: 1px solid black;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;
+
+const Title = styled.h1`
+    color: #fff;
+`;
+
+const SpecialText = styled.span`
+    text-transform: uppercase;
+`;
+
 function App() {
   return (
-    <div className="App">
+    <Container>
       <ThemeProvider theme={theme}>
+        <Title>Koya's Adventures
+                {' '}<SpecialText>in Space!</SpecialText>
+        </Title>
         <Board />
       </ThemeProvider>
-    </div>
+    </Container>
   );
 }
 
