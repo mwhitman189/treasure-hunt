@@ -11,6 +11,9 @@ import chroma from 'chroma-js';
 const Container = styled.div`
     max-width: 800px;
     font-size: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 
@@ -26,6 +29,10 @@ const Table = styled.table`
 `;
 
 const TableRow = styled.tr`
+`;
+
+const MoveBtnContainer = styled.div`
+    margin-top: 1rem;
 `;
 
 export default function Board({ nRows = 5, nCols = 5, nObstacles = 2, probability = 0.2 }) {
@@ -163,13 +170,15 @@ export default function Board({ nRows = 5, nCols = 5, nObstacles = 2, probabilit
                     )}
                 </tbody>
             </Table>
-            {moveList.map(move => (
-                <MoveBtn
-                    key={`move-${move.direction}`}
-                    symbol={move.symbol}
-                    moveHero={() => handleMove(move.direction)}
-                />
-            ))}
+            <MoveBtnContainer>
+                {moveList.map(move => (
+                    <MoveBtn
+                        key={`move-${move.direction}`}
+                        symbol={move.symbol}
+                        moveHero={() => handleMove(move.direction)}
+                    />
+                ))}
+            </MoveBtnContainer>
             <ResetBtn onClick={handleBtnClick}>Reset</ResetBtn>
         </Container>
     );

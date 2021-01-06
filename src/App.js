@@ -2,6 +2,8 @@ import Board from './components/Board';
 import './App.css';
 import { ThemeProvider } from 'styled-components';
 import styled from 'styled-components';
+import mars from './static/images/mars.jpg';
+import neptune from './static/images/neptune.jpg';
 
 
 const theme = {
@@ -20,6 +22,12 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  background-image: url(${mars}), url(${neptune});
+  background-repeat: no-repeat;
+  background-size: 50%;
+  background-position:
+    top left,
+    bottom right;
 `;
 
 const Title = styled.h1`
