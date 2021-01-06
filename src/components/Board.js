@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { getRandomImage } from '../utils/helperFunctions';
 import Space from './Space';
 import MoveBtn from './MoveBtn';
 import { moveList } from '../moveList';
+import { theme } from '../theme';
+import chroma from 'chroma-js';
 
 
 const Container = styled.div`
-    background-color: inherit;
+    background-color: black;
     border: 1px solid black;
+    font-size: 2rem;
 `;
 
 const Title = styled.h1`
-    color: black;
+    color: #fff;
 `;
 
 const SpecialText = styled.span`
-    font-size: 2rem;
     text-transform: uppercase;
 `;
 
@@ -26,9 +28,25 @@ const ResetBtn = styled.button`
     text-align: center;
 `;
 
-export default function Board({ nRows = 5, nCols = 5, nObstacles = 2, probability = 0.2 }) {
+const Table = styled.table`
+    border-spacing: 8px;
+    border-collapse: separate;
+`;
+
+const TableRow = styled.tr`
+`;
+
+export default function Board({ nRows = 9, nCols = 9, nObstacles = 2, probability = 0.2 }) {
     const [ board, setBoard ] = useState(createBoard());
     const [ location, setLocation ] = useState([ 0, 0 ]);
+    const [ hasWon, setHasWon ] = useState(false);
+    const [ spectrum, setSpectrum ] = useState(getShades([ theme.colors.main, theme.colors.tertiary, theme.colors.secondary ]));
+
+
+    function getShades(colorsArr) {
+        const colorSpectrum = chroma.scale(colorsArr).colors((nCols + nRows - 1));
+        return colorSpectrum;
+    }
 
     function createBoard() {
         let board = [];
@@ -52,6 +70,8 @@ export default function Board({ nRows = 5, nCols = 5, nObstacles = 2, probabilit
 
     function handleBtnClick() {
         setBoard(createBoard());
+        setLocation([ 0, 0 ]);
+        setHasWon(false);
     }
 
     function updateBoard(prevLoc, newLocation) {
@@ -72,6 +92,9 @@ export default function Board({ nRows = 5, nCols = 5, nObstacles = 2, probabilit
                     if (prevLoc[ 1 ] + 1 < nCols) {
                         const newLocation = [ prevLoc[ 0 ], prevLoc[ 1 ] + 1 ];
                         updateBoard(prevLoc, newLocation);
+                        if (newLocation[ 0 ] + 1 === nRows && newLocation[ 1 ] + 1 === nCols) {
+                            setHasWon(true);
+                        }
                         return newLocation;
                     }
                     return prevLoc;
@@ -83,6 +106,9 @@ export default function Board({ nRows = 5, nCols = 5, nObstacles = 2, probabilit
                     if (prevLoc[ 0 ] + 1 < nCols) {
                         const newLocation = [ prevLoc[ 0 ] + 1, prevLoc[ 1 ] ];
                         updateBoard(prevLoc, newLocation);
+                        if (newLocation[ 0 ] + 1 === nRows && newLocation[ 1 ] + 1 === nCols) {
+                            setHasWon(true);
+                        }
                         return newLocation;
                     }
                     return prevLoc;
@@ -95,6 +121,9 @@ export default function Board({ nRows = 5, nCols = 5, nObstacles = 2, probabilit
                     if (prevLoc[ 1 ] - 1 < nCols) {
                         const newLocation = [ prevLoc[ 0 ], prevLoc[ 1 ] - 1 ];
                         updateBoard(prevLoc, newLocation);
+                        if (newLocation[ 0 ] + 1 === nRows && newLocation[ 1 ] + 1 === nCols) {
+                            setHasWon(true);
+                        }
                         return newLocation;
                     }
                     return prevLoc;
@@ -106,6 +135,9 @@ export default function Board({ nRows = 5, nCols = 5, nObstacles = 2, probabilit
                     if (prevLoc[ 0 ] - 1 < nCols) {
                         const newLocation = [ prevLoc[ 0 ] - 1, prevLoc[ 1 ] ];
                         updateBoard(prevLoc, newLocation);
+                        if (newLocation[ 0 ] + 1 === nRows && newLocation[ 1 ] + 1 === nCols) {
+                            setHasWon(true);
+                        }
                         return newLocation;
                     }
                     return prevLoc;
@@ -119,25 +151,30 @@ export default function Board({ nRows = 5, nCols = 5, nObstacles = 2, probabilit
 
     return (
         <Container>
-            <Title>Koya's Adventures in
-                {' '}<SpecialText>Space!</SpecialText>
+            <Title>Koya's Adventures
+                {' '}<SpecialText>in Space!</SpecialText>
             </Title>
 
-            <table>
+            <Table>
                 <tbody>
                     {board.map((row, rowKey) =>
-                        <tr key={rowKey}>
-                            {row.map((space, idx) =>
-                                <Space
-                                    key={idx}
-                                    image={board[ rowKey ][ idx ]}
-                                    coord={`${rowKey}-${idx}`}
-                                />
+                        <TableRow key={rowKey}>
+                            {row.map((space, idx) => {
+                                return (
+                                    <Space
+                                        key={idx}
+                                        image={board[ rowKey ][ idx ]}
+                                        hasWon={hasWon}
+                                        coord={`${rowKey}-${idx}`}
+                                        color={spectrum[ idx + rowKey ]}
+                                    />
+                                );
+                            }
                             )}
-                        </tr>
+                        </TableRow>
                     )}
                 </tbody>
-            </table>
+            </Table>
             {moveList.map(move => (
                 <MoveBtn
                     key={`move-${move.direction}`}
