@@ -8,6 +8,8 @@ import { theme } from '../theme';
 import chroma from 'chroma-js';
 
 
+let moveCount = 0;
+
 const Container = styled.div`
     max-width: 800px;
     font-size: 1.5rem;
@@ -39,6 +41,7 @@ export default function Board({ nRows = 5, nCols = 5, nObstacles = 2, probabilit
     const [ board, setBoard ] = useState(createBoard());
     const [ location, setLocation ] = useState([ 0, 0 ]);
     const [ hasWon, setHasWon ] = useState(false);
+    const [ hasLost, setHasLost ] = useState(false);
     const [ spectrum, setSpectrum ] = useState(getShades([ theme.colors.main, theme.colors.tertiary, theme.colors.secondary ]));
 
 
@@ -49,7 +52,6 @@ export default function Board({ nRows = 5, nCols = 5, nObstacles = 2, probabilit
 
     function createBoard() {
         let board = [];
-        let remainingObstacles = nObstacles;
 
         for (let i = 0; i < nRows; i++) {
             const row = [ nCols ];
@@ -75,9 +77,12 @@ export default function Board({ nRows = 5, nCols = 5, nObstacles = 2, probabilit
 
     function updateBoard(prevLoc, newLocation) {
         setBoard(prevBoard => {
+            if (board[ newLocation[ 0 ] ][ newLocation[ 1 ] ] !== false) {
+                setHasLost(true);
+            }
             const newBoard = [ ...prevBoard ];
             // Clear old position
-            newBoard[ prevLoc[ 0 ] ][ prevLoc[ 1 ] ] = "";
+            newBoard[ prevLoc[ 0 ] ][ prevLoc[ 1 ] ] = moveCount;
             // Move hero icon to new position
             newBoard[ newLocation[ 0 ] ][ newLocation[ 1 ] ] = "👨‍🚀";
             return newBoard;
